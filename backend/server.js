@@ -1,0 +1,181 @@
+// Load env vars before anything else
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import multer from "multer";
+import { createClient } from "@supabase/supabase-js";
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Enable CORS and JSON parsing
+app.use(cors());
+app.use(express.json());
+
+// Ensure Supabase credentials are set
+const { SUPABASE_URL, SUPABASE_KEY } = process.env;
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error("Missing SUPABASE_URL or SUPABASE_KEY in .env");
+  process.exit(1);
+}
+
+// Initialize Supabase
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Multer setup: use memory storage for file buffer
+const memoryStorage = multer.memoryStorage();
+const upload = multer({ storage: memoryStorage });
+
+// Auth middleware
+const requireAuth = async (req, res, next) => {
+  const token = req.headers.authorization?.split("Bearer ")[1];
+  if (!token) return res.status(401).json({ error: "Missing token" });
+
+  console.log("Checking token:", token);
+  const { data, error } = await supabase.auth.getUser(token);
+
+  console.log("Supabase getUser data:", data);
+  console.log("Supabase getUser error:", error);
+
+  if (error || !data?.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  req.user = data.user;
+  next(); // ✅ This must be called after success
+};
+
+// Join Us section routes
+app.get("/joinus", async (req, res) => {
+  const { data, error } = await supabase
+    .from("joinus") // or the correct table for join-us info
+    .select("address, timing")
+    .limit(1);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  // data[0] may be undefined, so return empty defaults
+  res.json(data[0] || { address: "", timing: "" });
+});
+
+app.post("/joinus", requireAuth, async (req, res) => {
+  const { address, timing } = req.body;
+  // Assuming a single entry for joinus info, upsert with a fixed ID
+  const { data, error } = await supabase
+    .from("joinus")
+    .upsert({ id: 1, address, timing }); //
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+app.delete("/joinus/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { error } = await supabase.from("joinus").delete().eq("id", id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Services routes
+app.get("/services", async (req, res) => {
+  const { data, error } = await supabase.from("services").select();
+  console.log("Services fetch data:", data);
+  console.log("Services fetch error:", error);
+  res.status(error ? 500 : 200).json(error ? { error } : data);
+});
+
+app.post("/services", requireAuth, async (req, res) => {
+  const { id, title, description } = req.body;
+  if (id) {
+    const { data, error } = await supabase
+      .from("services")
+      .update({ title, description })
+      .eq("id", id);
+    if (error) return res.status(500).json({ error: error.message });
+  } else {
+    const { data, error } = await supabase
+      .from("services")
+      .insert({ title, description });
+    if (error) return res.status(500).json({ error: error.message });
+  }
+  res.json({ success: true });
+});
+
+app.delete("/services/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { error } = await supabase.from("services").delete().eq("id", id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Events routes
+app.get("/events", async (req, res) => {
+  const { data, error } = await supabase.from("events").select();
+  res.status(error ? 500 : 200).json(error ? { error } : data);
+});
+
+app.post("/events", requireAuth, async (req, res) => {
+  const { id, image_url, title, date, time, address, description } = req.body;
+  if (id) {
+    const { data, error } = await supabase
+      .from("events")
+      .update({ image_url, title, date, time, address, description })
+      .eq("id", id);
+    if (error) return res.status(500).json({ error: error.message });
+  } else {
+    const { data, error } = await supabase
+      .from("events")
+      .insert({ image_url, title, date, time, address, description });
+    if (error) return res.status(500).json({ error: error.message });
+  }
+  res.json({ success: true });
+});
+
+app.delete("/events/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { error } = await supabase.from("events").delete().eq("id", id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Upload image endpoint
+app.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+  const filePath = `events/${Date.now()}_${req.file.originalname}`;
+  const { data: uploadData, error: storageErr } = await supabase.storage
+    .from("your-bucket") // Make sure "your-bucket" is the correct bucket name in Supabase Storage
+    .upload(filePath, req.file.buffer, { contentType: req.file.mimetype });
+
+  if (storageErr) return res.status(500).json({ error: storageErr.message });
+
+  // Get the public URL of the uploaded image
+  const { data: publicUrlData } = supabase.storage
+    .from("your-bucket")
+    .getPublicUrl(filePath);
+
+  if (!publicUrlData || !publicUrlData.publicUrl) {
+    return res
+      .status(500)
+      .json({ error: "Could not get public URL for the uploaded image." });
+  }
+
+  res.json({ imageUrl: publicUrlData.publicUrl }); // Return the public URL
+});
+
+// Login endpoint
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) return res.status(401).json({ error: error.message });
+  res.json({ session: data.session, user: data.user });
+});
+
+// Start server
+app.listen(port, () =>
+  console.log(`Server running on http://localhost:${port}`)
+);
