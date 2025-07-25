@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Users, Book, Music, Coffee, Heart, MapPin } from 'lucide-react';
+import { Clock, Users, Book, Coffee, Heart, MapPin } from 'lucide-react';
 
 const Services = () => {
 
@@ -24,29 +24,11 @@ const Services = () => {
   }
 };
 
-  const services = [
-    {
-      title: 'Sunday Morning Worship',
-      time: '7:00 AM',
-      description: 'Join us for powerful worship, inspiring messages, and fellowship as we gather to praise God together.',
-      icon: Music,
-      features: ['Live worship music', 'Biblical preaching', 'Community prayer', 'Fellowship time']
-    },
-    {
-      title: 'Wednesday Bible Study',
-      time: '7:00 PM',
-      description: 'Dive deep into God\'s Word with verse-by-verse study and practical life applications.',
-      icon: Book,
-      features: ['In-depth Bible study', 'Small group discussions', 'Prayer requests', 'Study materials provided']
-    },
-    {
-      title: 'Friday Prayer Meeting',
-      time: '6:30 PM',
-      description: 'Come together for powerful prayer, intercession, and seeking God\'s presence and guidance.',
-      icon: Heart,
-      features: ['Corporate prayer', 'Personal ministry', 'Worship and praise', 'Spiritual breakthrough']
-    }
-  ];
+  const iconMap = {
+  Music,
+  Book,
+  Heart,
+};
 
   return (
     <div>

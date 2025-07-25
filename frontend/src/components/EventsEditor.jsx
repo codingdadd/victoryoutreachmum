@@ -73,6 +73,20 @@ export default function EventsEditor() {
       alert(`Error: ${error.message}`);
     }
   };
+  const handleDelete = async (id) => {
+      if (!window.confirm('Delete this event?')) return;
+      try {
+        const res = await fetch(`http://localhost:5000/events/${id}`, {
+          method: 'DELETE',
+          headers: buildAuthHeaders(),
+        });
+        if (!res.ok) throw new Error('Delete failed');
+        alert('Event deleted');
+        fetchEvents();
+      } catch (err) {
+        alert(err.message);
+      }
+    };
 
   const deleteOne = async (id) => {
     if (window.confirm("Are you sure you want to delete this event?")) {

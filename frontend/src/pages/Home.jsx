@@ -5,22 +5,19 @@ import { MapPin, Clock, ArrowRight, Heart, Users, Book } from 'lucide-react';
 const Home = () => {
   const [joinInfo, setJoinInfo] = useState({ address: '', timing: '' });
 
-  async function saveJoinInfo() {
-  console.log('🔄 Triggered joinus save');
-  console.log('Headers:', buildAuthHeaders());
-  console.log('Body:', { address, timing });
+  
+useEffect(() => {
+  fetch('http://localhost:5000/joinus')
+    .then(async res => {
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      setJoinInfo({ address: data.address, timing: data.timing });
+    })
+    .catch(err => console.error('Error fetching join info:', err));
+}, []);
 
-
-fetch('http://localhost:5000/joinus')
-  .then(async res => {
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    return res.json();
-  })
-  .then(data => {
-    setAddress(data.address);
-    setTiming(data.timing);
-  })
-  .catch(err => console.error('Error fetching join info:', err));}
 
   return (
     <div>

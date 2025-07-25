@@ -15,7 +15,6 @@ app.use(express.json());
 // Ensure Supabase credentials are set
 const { SUPABASE_URL, SUPABASE_KEY } = process.env;
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error("Missing SUPABASE_URL or SUPABASE_KEY in .env");
   process.exit(1);
 }
 
@@ -31,11 +30,7 @@ const requireAuth = async (req, res, next) => {
   const token = req.headers.authorization?.split("Bearer ")[1];
   if (!token) return res.status(401).json({ error: "Missing token" });
 
-  console.log("Checking token:", token);
   const { data, error } = await supabase.auth.getUser(token);
-
-  console.log("Supabase getUser data:", data);
-  console.log("Supabase getUser error:", error);
 
   if (error || !data?.user) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -80,8 +75,7 @@ app.delete("/joinus/:id", requireAuth, async (req, res) => {
 // Services routes
 app.get("/services", async (req, res) => {
   const { data, error } = await supabase.from("services").select();
-  console.log("Services fetch data:", data);
-  console.log("Services fetch error:", error);
+
   res.status(error ? 500 : 200).json(error ? { error } : data);
 });
 
@@ -142,10 +136,11 @@ app.delete("/events/:id", requireAuth, async (req, res) => {
 // Upload image endpoint
 app.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  const BUCKET = "events"; // EXACTLY your bucket name
 
   const filePath = `events/${Date.now()}_${req.file.originalname}`;
   const { data: uploadData, error: storageErr } = await supabase.storage
-    .from("your-bucket") // Make sure "your-bucket" is the correct bucket name in Supabase Storage
+    .from(BUCKET) // Make sure "your-bucket" is the correct bucket name in Supabase Storage
     .upload(filePath, req.file.buffer, { contentType: req.file.mimetype });
 
   if (storageErr) return res.status(500).json({ error: storageErr.message });
