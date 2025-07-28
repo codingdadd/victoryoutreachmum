@@ -72,34 +72,57 @@ app.delete("/joinus/:id", requireAuth, async (req, res) => {
   res.json({ success: true });
 });
 
-// Services routes
+//*****  Services routes******
+// GET all services
 app.get("/services", async (req, res) => {
-  const { data, error } = await supabase.from("services").select();
+  const { data, error } = await supabase
+    .from("services")
+    .select("*")
+    .order("title");
 
   res.status(error ? 500 : 200).json(error ? { error } : data);
 });
-
+// POST: Create or Update a service
 app.post("/services", requireAuth, async (req, res) => {
-  const { id, title, description } = req.body;
-  if (id) {
-    const { data, error } = await supabase
-      .from("services")
-      .update({ title, description })
-      .eq("id", id);
-    if (error) return res.status(500).json({ error: error.message });
-  } else {
-    const { data, error } = await supabase
-      .from("services")
-      .insert({ title, description });
-    if (error) return res.status(500).json({ error: error.message });
+  const { id, title, timing, description, icon } = req.body;
+
+  if (!title || !description || !icon) {
+    return res.status(400).json({ error: "Missing required fields." });
   }
-  res.json({ success: true });
+
+  let result;
+  if (id) {
+    // UPDATE existing service
+    const { data, error } = await supabase
+      .from("services")
+      .update({ title, timing, description, icon })
+      .eq("id", id);
+
+    if (error) return res.status(500).json({ error: error.message });
+    result = data;
+  } else {
+    // INSERT new service
+    const { data, error } = await supabase
+      .from("services")
+      .insert([{ title, timing, description, icon }]);
+
+    if (error) return res.status(500).json({ error: error.message });
+    result = data;
+  }
+
+  res.json({ success: true, data: result });
 });
 
+// DELETE a service
 app.delete("/services/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "Service ID is required." });
+
   const { error } = await supabase.from("services").delete().eq("id", id);
+
   if (error) return res.status(500).json({ error: error.message });
+
   res.json({ success: true });
 });
 

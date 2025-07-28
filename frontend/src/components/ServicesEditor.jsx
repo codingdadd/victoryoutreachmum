@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { buildAuthHeaders } from '../utils';
 
+const iconOptions = ['Music', 'Book', 'Heart', 'Coffee'];
+
 export default function ServicesEditor() {
   const [services, setServices] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [editingId, setEditingId] = useState(null);
+  const [iconChoice, setIconChoice] = useState('Heart');
+  const [timing, setTiming] = useState('');
+  const [date, setDate] = useState('');
 
   useEffect(() => {
     fetchServices();
@@ -23,15 +28,31 @@ export default function ServicesEditor() {
 
   const handleSave = async () => {
     try {
+      const selectedIcon = iconChoice || 'Heart';
+
       const res = await fetch('http://localhost:5000/services', {
         method: 'POST',
-        headers: buildAuthHeaders(),
-        body: JSON.stringify({ id: editingId, title, description }),
+        headers: {
+          ...buildAuthHeaders(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: editingId,
+          title,
+          description,
+          icon: selectedIcon,
+          timing: timing.trim(),
+          date: date.trim(),
+        }),
       });
+
       if (!res.ok) throw new Error('Failed to save');
       alert('Service saved');
       setTitle('');
       setDescription('');
+      setIconChoice('Heart');
+      setTiming('');
+      setDate('');
       setEditingId(null);
       fetchServices();
     } catch (err) {
@@ -43,6 +64,9 @@ export default function ServicesEditor() {
     setTitle(service.title);
     setDescription(service.description);
     setEditingId(service.id);
+    setIconChoice(service.icon || 'Heart');
+    setTiming(service.timing || '');
+    setDate(service.date || '');
   };
 
   const handleDelete = async (id) => {
@@ -77,6 +101,37 @@ export default function ServicesEditor() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        {/* Date Input */}
+        <input
+          type="date"
+          className="w-full border p-2 rounded"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+
+        {/* Time Range as Text */}
+        <input
+          type="text"
+          className="w-full border p-2 rounded"
+          placeholder="e.g. 07:00 PM - 09:00 PM"
+          value={timing}
+          onChange={(e) => setTiming(e.target.value)}
+        />
+
+        {/* Icon Dropdown */}
+        <select
+          className="w-full border p-2 rounded"
+          value={iconChoice}
+          onChange={(e) => setIconChoice(e.target.value)}
+        >
+          {iconOptions.map((icon) => (
+            <option key={icon} value={icon}>
+              {icon}
+            </option>
+          ))}
+        </select>
+
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded"
           onClick={handleSave}
@@ -89,8 +144,11 @@ export default function ServicesEditor() {
         {services.map((s) => (
           <li key={s.id} className="border p-4 rounded shadow">
             <h3 className="text-xl font-semibold">{s.title}</h3>
-            <p className="text-gray-600 mb-2">{s.description}</p>
-            <div className="space-x-2">
+            <p className="text-gray-600 mb-1">{s.description}</p>
+            <p className="text-gray-500 text-sm">Icon: {s.icon}</p>
+            <p className="text-gray-500 text-sm">Date: {s.date}</p>
+            <p className="text-gray-500 text-sm">Time: {s.timing}</p>
+            <div className="space-x-2 mt-2">
               <button
                 className="bg-yellow-500 text-white px-3 py-1 rounded"
                 onClick={() => handleEdit(s)}

@@ -1,34 +1,40 @@
-import React from 'react';
-import { Clock, Users, Book, Coffee, Heart, MapPin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Clock, Users, Book, Coffee, Heart, MapPin, Music } from 'lucide-react';
+
+// Optional: Define this or import from your auth util
+const buildAuthHeaders = () => {
+  return {
+    'Content-Type': 'application/json',
+    // 'Authorization': `Bearer ${yourToken}`, // Add if needed
+  };
+};
 
 const Services = () => {
+  const [services, setServices] = useState([]);
 
-  const handleDeleteService = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this service?")) return;
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/services', {
+          headers: buildAuthHeaders(),
+        });
+        const data = await res.json();
+        setServices(data);
+      } catch (err) {
+        console.error("Failed to fetch services:", err);
+      }
+    };
 
-  try {
-    const res = await fetch(`http://localhost:5000/services/${id}`, {
-      method: 'DELETE',
-      headers: buildAuthHeaders(),
-    });
-
-    if (res.ok) {
-      alert("Service deleted");
-      // Refresh services here if they're fetched from backend
-    } else {
-      const result = await res.json();
-      alert("Delete failed: " + result.error);
-    }
-  } catch (err) {
-    console.error("Error deleting service:", err);
-  }
-};
+    fetchServices();
+  }, []);
 
   const iconMap = {
-  Music,
-  Book,
-  Heart,
-};
+    Music: Music,
+    Book: Book,
+    Heart: Heart,
+    Coffee: Coffee,
+    default: Heart
+  };
 
   return (
     <div>
@@ -48,33 +54,34 @@ const Services = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-400 rounded-lg flex items-center justify-center mr-4">
-                    <service.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
-                    <div className="flex items-center text-gray-600 mt-1">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{service.time}</span>
+            {services.map((service, index) => {
+              const IconComponent = iconMap[service.icon] || iconMap.default;
+              return (
+                <div key={index} className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-400 rounded-lg flex items-center justify-center mr-4">
+                      {IconComponent && <IconComponent className="w-6 h-6 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
+                      <div className="flex items-center text-gray-600 mt-1">
+                        <Clock className="w-4 h-4 mr-1" />
+                        <span className="text-sm">{service.time}</span>
+                      </div>
                     </div>
                   </div>
+                  <p className="text-gray-600 mb-6">{service.description}</p>
+                  <ul className="space-y-2">
+                    {service.features?.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-gray-700">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                
-                <p className="text-gray-600 mb-6">{service.description}</p>
-                
-                <ul className="space-y-2">
-                  {service.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-gray-700">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
