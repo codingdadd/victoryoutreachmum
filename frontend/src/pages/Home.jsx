@@ -35,7 +35,7 @@ useEffect(() => {
           {/* Main content card with neumorphism */}
           <div className="bg-gradient-to-br from-white/80 to-gray-50/60 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-[20px_20px_40px_rgba(0,0,0,0.1),-20px_-20px_40px_rgba(255,255,255,0.8)] border border-white/20">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Welcome to
+              
               <span className="block bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mt-2">VICTORY OUTREACH MUMBAI</span>
             </h1>
             <div className="max-w-4xl mx-auto mb-8">

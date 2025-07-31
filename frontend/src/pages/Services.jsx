@@ -66,9 +66,15 @@ const Services = () => {
                       <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
                       <div className="flex items-center text-gray-600 mt-1">
                         <Clock className="w-4 h-4 mr-1" />
-                        <span className="text-sm">{service.time}</span>
+                        <span className="text-sm">{service.timing}</span>
                       </div>
+                      {service.date && (
+                  <div className="mt-1">
+                    <span className="text-sm font-bold text-gray-800">{service.date}</span>
+                  </div>
+                )}
                     </div>
+                    
                   </div>
                   <p className="text-gray-600 mb-6">{service.description}</p>
                   <ul className="space-y-2">

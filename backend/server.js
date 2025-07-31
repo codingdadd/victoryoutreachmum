@@ -84,9 +84,9 @@ app.get("/services", async (req, res) => {
 });
 // POST: Create or Update a service
 app.post("/services", requireAuth, async (req, res) => {
-  const { id, title, timing, description, icon } = req.body;
+  const { id, title, timing, description, icon, date } = req.body;
 
-  if (!title || !description || !icon) {
+  if (!title || !description || !icon || date) {
     return res.status(400).json({ error: "Missing required fields." });
   }
 
@@ -95,7 +95,7 @@ app.post("/services", requireAuth, async (req, res) => {
     // UPDATE existing service
     const { data, error } = await supabase
       .from("services")
-      .update({ title, timing, description, icon })
+      .update({ title, timing, description, icon, date })
       .eq("id", id);
 
     if (error) return res.status(500).json({ error: error.message });
@@ -104,7 +104,7 @@ app.post("/services", requireAuth, async (req, res) => {
     // INSERT new service
     const { data, error } = await supabase
       .from("services")
-      .insert([{ title, timing, description, icon }]);
+      .insert([{ title, timing, description, icon, date }]);
 
     if (error) return res.status(500).json({ error: error.message });
     result = data;
