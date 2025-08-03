@@ -84,9 +84,10 @@ app.get("/services", async (req, res) => {
 });
 // POST: Create or Update a service
 app.post("/services", requireAuth, async (req, res) => {
-  const { id, title, timing, description, icon, date } = req.body;
+  console.log("Received POST body:", req.body);
+  const { id, title, timing, description, icon, sdate } = req.body;
 
-  if (!title || !description || !icon || date) {
+  if (!title || !description || !icon) {
     return res.status(400).json({ error: "Missing required fields." });
   }
 
@@ -95,7 +96,7 @@ app.post("/services", requireAuth, async (req, res) => {
     // UPDATE existing service
     const { data, error } = await supabase
       .from("services")
-      .update({ title, timing, description, icon, date })
+      .update({ title, timing, description, icon, sdate })
       .eq("id", id);
 
     if (error) return res.status(500).json({ error: error.message });
@@ -104,7 +105,7 @@ app.post("/services", requireAuth, async (req, res) => {
     // INSERT new service
     const { data, error } = await supabase
       .from("services")
-      .insert([{ title, timing, description, icon, date }]);
+      .insert([{ title, timing, description, icon, sdate }]);
 
     if (error) return res.status(500).json({ error: error.message });
     result = data;
@@ -133,17 +134,17 @@ app.get("/events", async (req, res) => {
 });
 
 app.post("/events", requireAuth, async (req, res) => {
-  const { id, image_url, title, date, time, address, description } = req.body;
+  const { id, image_url, title, edate, time, address, description } = req.body;
   if (id) {
     const { data, error } = await supabase
       .from("events")
-      .update({ image_url, title, date, time, address, description })
+      .update({ image_url, title, edate, time, address, description })
       .eq("id", id);
     if (error) return res.status(500).json({ error: error.message });
   } else {
     const { data, error } = await supabase
       .from("events")
-      .insert({ image_url, title, date, time, address, description });
+      .insert({ image_url, title, edate, time, address, description });
     if (error) return res.status(500).json({ error: error.message });
   }
   res.json({ success: true });
@@ -158,28 +159,49 @@ app.delete("/events/:id", requireAuth, async (req, res) => {
 
 // Upload image endpoint
 app.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-  const BUCKET = "events"; // EXACTLY your bucket name
+  try {
+    // 1. Check if file is attached
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  const filePath = `events/${Date.now()}_${req.file.originalname}`;
-  const { data: uploadData, error: storageErr } = await supabase.storage
-    .from(BUCKET) // Make sure "your-bucket" is the correct bucket name in Supabase Storage
-    .upload(filePath, req.file.buffer, { contentType: req.file.mimetype });
+    // 2. Define bucket name (ensure this matches exactly in Supabase dashboard)
+    const BUCKET = "events"; // Correct: matches your Supabase bucket
 
-  if (storageErr) return res.status(500).json({ error: storageErr.message });
+    // 3. Construct a unique file path
+    const timestamp = Date.now();
+    const filePath = `${BUCKET}/${timestamp}_${req.file.originalname}`;
 
-  // Get the public URL of the uploaded image
-  const { data: publicUrlData } = supabase.storage
-    .from("your-bucket")
-    .getPublicUrl(filePath);
+    // 4. Upload the file
+    const { data: uploadData, error: storageErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(filePath, req.file.buffer, {
+        contentType: req.file.mimetype,
+        upsert: true, // Optional: overwrites if file exists
+      });
 
-  if (!publicUrlData || !publicUrlData.publicUrl) {
-    return res
-      .status(500)
-      .json({ error: "Could not get public URL for the uploaded image." });
+    if (storageErr) {
+      console.error("Upload error:", storageErr.message);
+      return res.status(500).json({ error: storageErr.message });
+    }
+
+    // 5. Get the public URL of the uploaded file
+    const { data: publicUrlData, error: publicErr } = supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(filePath);
+
+    if (publicErr || !publicUrlData?.publicUrl) {
+      return res.status(500).json({
+        error: "Could not get public URL for the uploaded image.",
+      });
+    }
+
+    // 6. Respond with the public URL
+    res.status(200).json({ imageUrl: publicUrlData.publicUrl });
+  } catch (err) {
+    console.error("Unexpected error in /upload:", err);
+    res.status(500).json({ error: "Internal server error." });
   }
-
-  res.json({ imageUrl: publicUrlData.publicUrl }); // Return the public URL
 });
 
 // Login endpoint

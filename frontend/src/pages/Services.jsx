@@ -68,9 +68,9 @@ const Services = () => {
                         <Clock className="w-4 h-4 mr-1" />
                         <span className="text-sm">{service.timing}</span>
                       </div>
-                      {service.date && (
+                      {service.sdate && (
                   <div className="mt-1">
-                    <span className="text-sm font-bold text-gray-800">{service.date}</span>
+                    <span className="text-sm font-bold text-gray-800">{service.sdate}</span>
                   </div>
                 )}
                     </div>

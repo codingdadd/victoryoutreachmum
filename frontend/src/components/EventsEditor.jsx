@@ -7,7 +7,7 @@ export default function EventsEditor() {
   const [edit, setEdit] = useState({
     image_url: '',
     title: '',
-    date: '',
+    edate: '',
     time: '',
     address: '',
     description: '',
@@ -38,6 +38,7 @@ export default function EventsEditor() {
         body: formData,
       });
 
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Image upload failed');
@@ -65,7 +66,7 @@ export default function EventsEditor() {
         throw new Error(errorData.error || 'Failed to save event');
       }
 
-      setEdit({ image_url: '', title: '', date: '', time: '', address: '', description: '', id: null }); // Reset form
+      setEdit({ image_url: '', title: '', edate: '', time: '', address: '', description: '', id: null }); // Reset form
       fetchEvents(); // Re-fetch to update the list
       alert('Event saved successfully!');
     } catch (error) {
@@ -124,7 +125,7 @@ export default function EventsEditor() {
               onChange={e => setItems(items.map(i => i.id === ev.id ? { ...i, title: e.target.value } : i))}
               className="p-2 border rounded w-full mb-1"
             />
-            <p className="text-sm text-gray-600">{ev.date} at {ev.time}</p>
+            <p className="text-sm text-gray-600">{ev.edate} at {ev.time}</p>
           </div>
           <button
             className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 mr-2"
@@ -134,7 +135,7 @@ export default function EventsEditor() {
                 id: ev.id,
                 image_url: ev.image_url,
                 title: ev.title,
-                date: ev.date,
+                edate: ev.edate,
                 time: ev.time,
                 address: ev.address,
                 description: ev.description
@@ -170,8 +171,8 @@ export default function EventsEditor() {
         <input
           type="date"
           className="p-2 border rounded"
-          value={edit.date}
-          onChange={e => setEdit({ ...edit, date: e.target.value })}
+          value={edit.edate}
+          onChange={e => setEdit({ ...edit, edate: e.target.value })}
         />
         <input
           type="text"
@@ -202,7 +203,7 @@ export default function EventsEditor() {
       {edit.id && ( // Show cancel button when editing
         <button
           className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 ml-2"
-          onClick={() => setEdit({ image_url: '', title: '', date: '', time: '', address: '', description: '', id: null })}
+          onClick={() => setEdit({ image_url: '', title: '', edate: '', time: '', address: '', description: '', id: null })}
         >
           Cancel Edit
         </button>

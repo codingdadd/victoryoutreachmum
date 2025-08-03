@@ -10,7 +10,7 @@ export default function ServicesEditor() {
   const [editingId, setEditingId] = useState(null);
   const [iconChoice, setIconChoice] = useState('Heart');
   const [timing, setTiming] = useState('');
-  const [date, setDate] = useState('');
+  const [sdate, setDate] = useState('');
 
   useEffect(() => {
     fetchServices();
@@ -27,6 +27,15 @@ export default function ServicesEditor() {
   };
 
   const handleSave = async () => {
+    console.log("Saving with data:", {
+  id: editingId,
+  title,
+  description,
+  icon: iconChoice,
+  timing,
+  sdate,
+});
+
     try {
       const selectedIcon = iconChoice || 'Heart';
 
@@ -36,15 +45,20 @@ export default function ServicesEditor() {
           ...buildAuthHeaders(),
           'Content-Type': 'application/json',
         },
+        
         body: JSON.stringify({
           id: editingId,
           title,
           description,
           icon: selectedIcon,
           timing: timing.trim(),
-          date: date.trim(),
+          sdate: sdate.trim(),
+        
+        
         }),
+        
       });
+
 
       if (!res.ok) throw new Error('Failed to save');
       alert('Service saved');
@@ -66,7 +80,7 @@ export default function ServicesEditor() {
     setEditingId(service.id);
     setIconChoice(service.icon || 'Heart');
     setTiming(service.timing || '');
-    setDate(service.date || '');
+    setDate(service.sdate || '');
   };
 
   const handleDelete = async (id) => {
@@ -106,7 +120,7 @@ export default function ServicesEditor() {
         <input
           type="date"
           className="w-full border p-2 rounded"
-          value={date}
+          value={sdate}
           onChange={(e) => setDate(e.target.value)}
         />
 
@@ -146,7 +160,7 @@ export default function ServicesEditor() {
             <h3 className="text-xl font-semibold">{s.title}</h3>
             <p className="text-gray-600 mb-1">{s.description}</p>
             <p className="text-gray-500 text-sm">Icon: {s.icon}</p>
-            <p className="text-gray-500 text-sm">Date: {s.date}</p>
+            <p className="text-gray-500 text-sm">Date: {s.sdate}</p>
             <p className="text-gray-500 text-sm">Time: {s.timing}</p>
             <div className="space-x-2 mt-2">
               <button
