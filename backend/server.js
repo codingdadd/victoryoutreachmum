@@ -130,6 +130,8 @@ app.delete("/services/:id", requireAuth, async (req, res) => {
 // Events routes
 app.get("/events", async (req, res) => {
   const { data, error } = await supabase.from("events").select();
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
   res.status(error ? 500 : 200).json(error ? { error } : data);
 });
 
