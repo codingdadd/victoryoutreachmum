@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Heart, Phone, Mail, MapPin } from 'lucide-react';
+import vomlogo from "../image/VictoryLOGO.svg"
+
 
 
 
@@ -31,9 +33,9 @@ const Layout = ({ children }) => {
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-400 rounded-lg flex items-center justify-center">
-                <Heart className="w-7 h-7 text-white" />
-              </div>
+              <div className="w-14 h-14overflow-hidden flex items-center justify-center">
+                <img src={vomlogo} alt="logo" />
+                </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-800">Victory Outreach</h1>
                 <p className="text-xs text-gray-500">Ministries</p>
@@ -101,10 +103,10 @@ const Layout = ({ children }) => {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-400 rounded-lg flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-white" />
+                <div className="w-20 h-20 flex items-center justify-center">
+                   <img src={vomlogo} alt="logo" className="w-25 h-25  " />
                 </div>
-                <h3 className="text-lg font-bold">Victory Outreach Mumbais</h3>
+                <h3 className="text-lg font-bold">Victory Outreach Mumbai</h3>
               </div>
               <p className="text-gray-400 mb-4 max-w-md">
                 Reaching the lost and broken with the love of Christ. Empowering individuals 
@@ -117,11 +119,11 @@ const Layout = ({ children }) => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone className="w-4 h-4 text-blue-400" />
-                  <span className="text-gray-400">(+91) 98765-43210</span>
+                  <span className="text-gray-400">(+91) 9892155495</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Mail className="w-4 h-4 text-blue-400" />
-                  <span className="text-gray-400">info@victoryoutreachmumbai.org</span>
+                  <span className="text-gray-400">vomumbai@gmail.com</span>
                 </div>
               </div>
             </div>
@@ -129,10 +131,10 @@ const Layout = ({ children }) => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                <li><Link to="/services" className="text-gray-400 hover:text-white transition-colors">Sunday Service</Link></li>
-                <li><Link to="/events" className="text-gray-400 hover:text-white transition-colors">Upcoming Events</Link></li>
-                <li><Link to="/children" className="text-gray-400 hover:text-white transition-colors">Children's Ministry</Link></li>
-                <li><Link to="/donation" className="text-gray-400 hover:text-white transition-colors">Give</Link></li>
+                <li><Link to="/services" onClick={() => window.scrollTo(0,0)} className="text-gray-400 hover:text-white transition-colors">Sunday Service</Link></li>
+                <li><Link to="/events" onClick={() => window.scrollTo(0,0)}  className="text-gray-400 hover:text-white transition-colors">Upcoming Events</Link></li>
+                <li><Link to="/children" onClick={() => window.scrollTo(0,0)}  className="text-gray-400 hover:text-white transition-colors">Children's Ministry</Link></li>
+                <li><Link to="/donation" onClick={() => window.scrollTo(0,0)}  className="text-gray-400 hover:text-white transition-colors">Give</Link></li>
               </ul>
             </div>
             
@@ -148,6 +150,8 @@ const Layout = ({ children }) => {
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2025 Victory Outreach Ministries. All rights reserved.</p>
+            <a href=''><p>Created by William, designed by Anthony</p></a>
+            
           </div>
         </div>
       </footer>

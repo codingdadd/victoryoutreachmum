@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Clock, ArrowRight, Heart, Users, Book } from 'lucide-react';
 
+
 const Home = () => {
   const [joinInfo, setJoinInfo] = useState({ address: '', timing: '' });
 
@@ -210,12 +211,14 @@ useEffect(() => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
+                onClick={() => winodow.scrollT(0,0)}
                 className="bg-gradient-to-r from-blue-500 to-green-500 text-white px-8 py-3 rounded-2xl font-semibold shadow-[8px_8px_16px_rgba(0,0,0,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:shadow-[4px_4px_8px_rgba(0,0,0,0.2),-4px_-4px_8px_rgba(255,255,255,0.9)] transition-all duration-300 transform hover:scale-105"
               >
                 Visit Us This Sunday
               </Link>
               <Link
                 to="/donation"
+                onClick={() => window.scrollT(0,0)}
                 className="bg-gradient-to-br from-white/80 to-gray-50/60 text-blue-600 px-8 py-3 rounded-2xl font-semibold shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.8)] hover:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.9)] transition-all duration-300 transform hover:scale-105 border border-white/30"
               >
                 Support Our Mission

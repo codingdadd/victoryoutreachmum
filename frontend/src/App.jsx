@@ -13,7 +13,7 @@ import Donation from './pages/Donation';
 import Login from './pages/Login';
 import AdminPage from './components/AdminPage';
 import EventsEditor from './components/EventsEditor';
-import ServicesEditor from './components/ServicesEditor';
+import ServicesEditor from './components/ServicesEditor'
 
 
 function App() {

@@ -121,7 +121,7 @@ export default function EventsEditor() {
           {ev.image_url && <img src={ev.image_url} alt={ev.title} className="h-16 w-16 object-cover rounded" />}
           <div className="flex-1">
             <input
-              value={ev.title}
+              value={ev.title || ""}
               onChange={e => setItems(items.map(i => i.id === ev.id ? { ...i, title: e.target.value } : i))}
               className="p-2 border rounded w-full mb-1"
             />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, DollarSign, Users, Home, GraduationCap, Star, Shield, CreditCard, Check, IndianRupee } from 'lucide-react';
-
+import QRscanner from '../image/QRscanner.jpeg';
 const Donation = () => {
   const [selectedAmount, setSelectedAmount] = useState(1000);
   const [customAmount, setCustomAmount] = useState('');
@@ -86,7 +86,23 @@ const Donation = () => {
             and caring for the hurting people of the world. Every gift makes an eternal difference.
           </p>
         </div>
+        {/* QRScanner section */}
       </section>
+        <section className="bg-white py-12">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Scan to Donate</h2>
+          <img 
+            src={QRscanner} 
+            alt="QR Code Scanner" 
+            className="mx-auto w-full max-w-md rounded-xl shadow-lg border border-gray-300"
+          />
+          <p className="mt-4 text-gray-600 text-lg">
+            Scan this QR code with any UPI app to make your donation quickly and securely And fill the form to lets us know .
+          </p>
+        </div>
+      </section>
+
+
 
      {/* Donation Form */}
 <section className="py-16 bg-white">

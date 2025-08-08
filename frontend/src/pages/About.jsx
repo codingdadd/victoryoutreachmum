@@ -49,7 +49,7 @@ const About = () => {
 
   return (
     <div>
-      {/* Hero Section */}
+      {/* about Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="block text-5xl bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mt-2">About Victory Outreach Ministries</h1>

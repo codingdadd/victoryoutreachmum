@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Heart, Home, GraduationCap, Users, Star, Shield, Gift, Smile, Book, SprayCan as Pray } from 'lucide-react';
 
 const Children = () => {
@@ -54,8 +55,8 @@ const Children = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-green-600 to-blue-700 py-20">
+      {/* Children hero Section */}
+      <section className="relative bg-gradient-to-br from-green-300 via-green-300 to-green-500 py-20">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Victory Outreach Children's Home</h1>
@@ -169,9 +170,11 @@ const Children = () => {
                 Sponsor a child's monthly needs including food, clothing, education, and spiritual care.
               </p>
               <div className="text-2xl font-bold text-blue-600 mb-4">₹5,000/month</div>
+              <Link to='/donation' onClick={() =>window.scrollTo(0,0)}>
               <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                 Sponsor Now
               </button>
+              </Link>
             </div>
             
             <div className="bg-white p-8 rounded-2xl text-center shadow-lg">
@@ -183,9 +186,11 @@ const Children = () => {
                 Support educational expenses including school fees, books, uniforms, and supplies.
               </p>
               <div className="text-2xl font-bold text-green-600 mb-4">₹2,000/month</div>
+              <Link to='/donation' onClick={() =>window.scrollTo(0,0)}>
               <button className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                 Support Education
               </button>
+              </Link>
             </div>
             
             <div className="bg-white p-8 rounded-2xl text-center shadow-lg">
@@ -197,9 +202,11 @@ const Children = () => {
                 Provide special occasion gifts, birthday celebrations, and holiday surprises.
               </p>
               <div className="text-2xl font-bold text-yellow-600 mb-4">₹1,000+</div>
+             <Link to='/donation' onClick={() =>window.scrollTo(0,0)}>
               <button className="w-full bg-yellow-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-yellow-700 transition-colors">
                 Give a Gift
               </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -243,9 +250,12 @@ const Children = () => {
                 </div>
               </div>
               
-              <button className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                Become a Volunteer
-              </button>
+             <Link to="/contact"
+  onClick={() => window.scrollTo(0, 0)}>
+  <button className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+    Become a volunteer
+  </button>
+</Link>
             </div>
             
             <div className="relative">
@@ -269,12 +279,13 @@ const Children = () => {
             Whether through sponsorship, donations, or volunteering, you can make an eternal difference.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Support Our Children
-            </button>
-            <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-              Learn More
-            </button>
+            <Link to="/donation"
+  onClick={() => window.scrollTo(0, 0)}>
+  <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+    Support Our Children
+  </button>
+</Link>
+           
           </div>
         </div>
       </section>
