@@ -151,12 +151,20 @@ app.post("/events", requireAuth, async (req, res) => {
   }
   res.json({ success: true });
 });
-
-app.delete("/events/:id", requireAuth, async (req, res) => {
+//delete events
+app.delete("/events/:id", async (req, res) => {
   const { id } = req.params;
-  const { error } = await supabase.from("events").delete().eq("id", id);
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ success: true });
+
+  console.log("Deleting ID:", id);
+
+  const { data, error } = await supabase.from("events").delete().eq("id", id);
+
+  if (error) {
+    console.error("Delete error:", error);
+    return res.status(401).json({ error: error.message });
+  }
+
+  res.json({ success: true, deleted: data });
 });
 
 // Upload image endpoint
