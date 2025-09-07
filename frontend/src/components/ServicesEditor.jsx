@@ -18,7 +18,7 @@ export default function ServicesEditor() {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch('http://localhost:5000/services');
+      const res = await fetch('https://vom-backend.onrender.com/services');
       const data = await res.json();
       setServices(data);
     } catch (error) {
@@ -39,7 +39,7 @@ export default function ServicesEditor() {
     try {
       const selectedIcon = iconChoice || 'Heart';
 
-      const res = await fetch('http://localhost:5000/services', {
+      const res = await fetch('https://vom-backend.onrender.com/services', {
         method: 'POST',
         headers: {
           ...buildAuthHeaders(),
@@ -86,7 +86,7 @@ export default function ServicesEditor() {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this service?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/services/${id}`, {
+      const res = await fetch(`https://vom-backend.onrender.com/services/${id}`, {
         method: 'DELETE',
         headers: buildAuthHeaders(),
       });

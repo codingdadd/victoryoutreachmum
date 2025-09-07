@@ -19,7 +19,7 @@ export default function EventsEditor() {
   }, []);
 
   const fetchEvents = () => {
-    fetch('http://localhost:5000/events')
+    fetch('https://vom-backend.onrender.com/events')
       .then(r => r.json())
       .then(setItems)
       .catch(console.error);
@@ -30,7 +30,7 @@ export default function EventsEditor() {
     formData.append('file', file);
 
     try {
-      const res = await fetch('http://localhost:5000/upload', {
+      const res = await fetch('https://vom-backend.onrender.com/upload', {
         method: 'POST',
         headers: {
           Authorization: buildAuthHeaders().Authorization, // Only include Authorization header for file upload
@@ -55,7 +55,7 @@ export default function EventsEditor() {
 
   const saveOne = async () => {
     try {
-      const res = await fetch('http://localhost:5000/events', {
+      const res = await fetch('https://vom-backend.onrender.com/events', {
         method: 'POST',
         headers: buildAuthHeaders(),
         body: JSON.stringify(edit),
@@ -74,42 +74,32 @@ export default function EventsEditor() {
       alert(`Error: ${error.message}`);
     }
   };
-  const handleDelete = async (id) => {
-      if (!window.confirm('Delete this event?')) return;
-      try {
-        const res = await fetch(`http://localhost:5000/events/${id}`, {
-          method: 'DELETE',
-          headers: buildAuthHeaders(),
-        });
-        if (!res.ok) throw new Error('Delete failed');
-        alert('Event deleted');
-        fetchEvents();
-      } catch (err) {
-        alert(err.message);
-      }
-    };
 
   const deleteOne = async (id) => {
-    if (window.confirm("Are you sure you want to delete this event?")) {
-      try {
-        const res = await fetch(`http://localhost:5000/events/${id}`, {
-          method: 'DELETE',
-          headers: buildAuthHeaders(),
-        });
+  if (window.confirm("Are you sure you want to delete this event?")) {
+    try {
+      console.log("Trying to delete event with id:", id);
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Failed to delete event');
-        }
+      const res = await fetch(`https://vom-backend.onrender.com/events/${id}`, {
+        method: "DELETE",
+        headers: buildAuthHeaders(),
+      });
 
-        alert('Event deleted!');
-        fetchEvents(); // Re-fetch to update the list
-      } catch (error) {
-        console.error("Error deleting event:", error);
-        alert(`Error: ${error.message}`);
+      const result = await res.json();
+      console.log("Delete response:", result);
+
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to delete event");
       }
+
+      alert("Event deleted!");
+      fetchEvents(); // refresh the list
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert(`Error: ${error.message}`);
     }
-  };
+  }
+};
 
   return (
     <section className="bg-white p-6 rounded-lg shadow">

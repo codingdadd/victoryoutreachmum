@@ -12,7 +12,7 @@ export default function JoinUsEditor() {
 
   const fetchJoinUsInfo = () => {
 
-    fetch('http://localhost:5000/joinus') // Changed from '/join' to '/joinus'
+    fetch('https://vom-backend.onrender.com/joinus') // Changed from '/join' to '/joinus'
       .then(r => r.json())
       .then(data => {
         setAddress(data?.address || '');
@@ -24,7 +24,7 @@ export default function JoinUsEditor() {
 
   const save = async () => {
     try {
-      const res = await fetch('http://localhost:5000/joinus', { // Changed from '/join' to '/joinus'
+      const res = await fetch('https://vom-backend.onrender.com/joinus', { // Changed from '/join' to '/joinus'
         method: 'POST',
         headers: buildAuthHeaders(),
         body: JSON.stringify({ id: id, address, timing }), // Pass ID for upsert
@@ -48,7 +48,7 @@ export default function JoinUsEditor() {
     }
     if (window.confirm("Are you sure you want to delete the Join Us section?")) {
       try {
-        const res = await fetch(`http://localhost:5000/joinus/${id}`, { // Changed from '/join' to '/joinus'
+        const res = await fetch(`https://vom-backend.onrender.com/${id}`, { // Changed from '/join' to '/joinus'
           method: 'DELETE',
           headers: buildAuthHeaders(),
         });
